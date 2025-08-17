@@ -48,16 +48,23 @@ src/
 ### Page Components
 - **`src/pages/HomePage.tsx`**: Main landing page combining hero, products, and features
 - **`src/pages/LoginPage.tsx`**: User authentication login form
-- **`src/pages/RegisterPage.tsx`**: User registration form
+- **`src/pages/RegisterPage.tsx`**: User registration form with separate firstName/lastName fields
 
 ### Authentication System
 - **Context**: `src/context/AuthContext.tsx` provides global auth state management
 - **Types**: `src/types/auth.ts` defines User, AuthState, and credentials interfaces
+- **API Service**: `src/utils/authService.ts` handles authentication API calls
+- **API Client**: `src/utils/api.ts` provides HTTP client with automatic token handling
+- **Backend Integration**: 
+  - Login: `POST http://localhost:3001/api/auth/login`
+  - Register: `POST http://localhost:3001/api/auth/register`
 - **Features**: 
-  - LocalStorage persistence for user sessions
-  - Demo credentials: `demo@example.com` / `password`
+  - JWT token authentication with refresh token support
+  - LocalStorage persistence for tokens and user data
+  - Automatic token injection in API requests
   - Thai language UI with validation messages
   - Protected cart functionality (only visible when authenticated)
+  - User data includes firstName, lastName, email, role, and verification status
 
 ### Key Patterns
 - Uses functional components with React hooks

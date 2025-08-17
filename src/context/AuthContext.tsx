@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useReducer, useEffect } from 'react';
 import type { AuthState, AuthContextType, LoginCredentials, RegisterCredentials, User } from '../types/auth';
+import { AuthService } from '../utils/authService';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -50,38 +51,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const initializeAuth = () => {
       try {
-        const user = JSON.parse(storedUser);
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+        const storedUser = AuthService.getStoredUser();
+        const token = AuthService.getToken();
+        
+        if (storedUser && token) {
+          dispatch({ type: 'LOGIN_SUCCESS', payload: storedUser });
+        } else {
+          AuthService.clearTokens();
+          dispatch({ type: 'SET_LOADING', payload: false });
+        }
       } catch {
-        localStorage.removeItem('user');
+        AuthService.clearTokens();
         dispatch({ type: 'LOGIN_FAILURE' });
       }
-    } else {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
     dispatch({ type: 'LOGIN_START' });
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (credentials.email === 'demo@example.com' && credentials.password === 'password') {
-        const user: User = {
-          id: '1',
-          email: credentials.email,
-          name: 'Demo User',
-        };
-        
-        localStorage.setItem('user', JSON.stringify(user));
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-      } else {
-        throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-      }
+      const response = await AuthService.login(credentials);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
@@ -96,25 +91,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('รหัสผ่านไม่ตรงกัน');
       }
       
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const user: User = {
-        id: Date.now().toString(),
-        email: credentials.email,
-        name: credentials.name,
-      };
-      
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+      const response = await AuthService.register(credentials);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
     }
   };
 
-  const logout = (): void => {
-    localStorage.removeItem('user');
-    dispatch({ type: 'LOGOUT' });
+  const logout = async (): Promise<void> => {
+    try {
+      await AuthService.logout();
+    } catch (error) {
+      console.warn('Logout error:', error);
+    } finally {
+      dispatch({ type: 'LOGOUT' });
+    }
   };
 
   const value: AuthContextType = {

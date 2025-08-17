@@ -10,9 +10,14 @@ const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  const handleLogout = () => {
-    logout();
-    setIsUserMenuOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsUserMenuOpen(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+      setIsUserMenuOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -70,7 +75,7 @@ const Header: React.FC = () => {
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
                 >
                   <User className="h-5 w-5" />
-                  <span className="hidden md:block">{user?.name}</span>
+                  <span className="hidden md:block">{user?.firstName} {user?.lastName}</span>
                 </button>
                 
                 {isUserMenuOpen && (
@@ -154,7 +159,7 @@ const Header: React.FC = () => {
               {isAuthenticated && (
                 <>
                   <div className="text-sm text-gray-500 border-t pt-4">
-                    {user?.name} ({user?.email})
+                    {user?.firstName} {user?.lastName} ({user?.email})
                   </div>
                   <a href="#" className="text-gray-600 hover:text-gray-900">
                     โปรไฟล์

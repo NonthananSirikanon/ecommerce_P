@@ -1,8 +1,23 @@
 export interface User {
   id: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  name: string;
+  role: string;
+  isVerified: boolean;
   avatar?: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  token: string;
+  refreshToken: string;
+  user: User;
+}
+
+export interface AuthTokens {
+  token: string;
+  refreshToken: string;
 }
 
 export interface AuthState {
@@ -17,7 +32,8 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -29,5 +45,5 @@ export interface AuthContextType {
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (credentials: RegisterCredentials) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }

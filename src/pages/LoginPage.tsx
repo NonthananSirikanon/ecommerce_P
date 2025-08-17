@@ -139,11 +139,6 @@ const LoginPage: React.FC = () => {
               </button>
             </div>
 
-            <div className="mt-6">
-              <div className="text-center text-sm text-gray-500">
-                สำหรับการทดสอบ: demo@example.com / password
-              </div>
-            </div>
           </form>
         </div>
       </div>
