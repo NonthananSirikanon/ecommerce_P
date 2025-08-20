@@ -31,7 +31,7 @@ This is a React + TypeScript + Vite e-commerce application with the following st
 src/
 ├── components/          # Reusable UI components
 ├── context/            # React Context providers
-├── hooks/             # Custom React hooks (future use)
+├── hooks/             # Custom React hooks (useAuth, useProducts)
 ├── pages/             # Page components for routing
 ├── types/             # TypeScript type definitions
 └── utils/             # Utility functions (future use)
@@ -40,10 +40,10 @@ src/
 ### Component Architecture
 - **`src/components/Header.tsx`**: Navigation header with authentication, responsive mobile menu, search, and cart functionality
 - **`src/components/HeroSection.tsx`**: Landing page hero section
-- **`src/components/FeaturedProducts.tsx`**: Product showcase section
+- **`src/components/FeaturedProducts.tsx`**: Product showcase section with API integration, loading states, and error handling
 - **`src/components/Features.tsx`**: Feature highlights section
 - **`src/components/Footer.tsx`**: Site footer
-- **`src/components/Product_Card.tsx`**: Reusable product card component with Product interface
+- **`src/components/Product_Card.tsx`**: Reusable product card with API data, image fallbacks, stock status, and add-to-cart functionality
 
 ### Page Components
 - **`src/pages/HomePage.tsx`**: Main landing page combining hero, products, and features
@@ -55,9 +55,24 @@ src/
 - **Types**: `src/types/auth.ts` defines User, AuthState, and credentials interfaces
 - **API Service**: `src/utils/authService.ts` handles authentication API calls
 - **API Client**: `src/utils/api.ts` provides HTTP client with automatic token handling
+
+### Product System
+- **Types**: `src/types/product.ts` defines Product, ProductsResponse, and Pagination interfaces
+- **API Service**: `src/utils/productService.ts` handles product API calls and queries
+- **Custom Hooks**: `src/hooks/useProducts.ts` provides reusable product fetching logic
+  - `useProducts(params)`: General product fetching with query parameters
+  - `useFeaturedProducts(limit)`: Specialized hook for featured products
+- **Features**:
+  - Real-time product data from backend API
+  - Reusable custom hooks for consistent state management
+  - Image fallback handling for missing product images
+  - Stock quantity display and out-of-stock states
+  - Thai currency formatting (THB)
+  - Loading states and error handling with retry functionality
 - **Backend Integration**: 
   - Login: `POST http://localhost:3001/api/auth/login`
   - Register: `POST http://localhost:3001/api/auth/register`
+  - Products: `GET http://localhost:3001/api/simple-products`
 - **Features**: 
   - JWT token authentication with refresh token support
   - LocalStorage persistence for tokens and user data

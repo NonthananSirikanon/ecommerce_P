@@ -1,49 +1,16 @@
+import React from 'react';
 import ProductCard from "./Product_Card";
-export interface Product {
-  id: number;
-  name: string;
-  price: string;
-  originalPrice?: string;
-  image: string;
-  rating: number;
-  badge?: string;
-}
-// Featured Products Component
+import { useFeaturedProducts } from '../hooks/useProducts';
+import type { Product } from '../types/product';
+
 const FeaturedProducts: React.FC = () => {
-    
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "PlayStation 5",
-      price: "฿18,990",
-      originalPrice: "฿21,990",
-      image: "",
-      rating: 5,
-      badge: "HOT"
-    },
-    {
-      id: 2,
-      name: "Xbox Series X",
-      price: "฿16,990",
-      image: "",
-      rating: 5
-    },
-    {
-      id: 3,
-      name: "Nintendo Switch OLED",
-      price: "฿12,990",
-      image: "",
-      rating: 4
-    },
-    {
-      id: 4,
-      name: "Steam Deck",
-      price: "฿19,990",
-      image: "",
-      rating: 4,
-      badge: "NEW"
-    }
-  ];
+  const { products, loading, error, refetch } = useFeaturedProducts(8);
+
+  const handleAddToCart = (product: Product) => {
+    // TODO: Implement cart functionality
+    console.log('Add to cart:', product);
+    alert(`เพิ่ม "${product.name}" ลงในตะกร้าแล้ว!`);
+  };
 
   return (
     <section className="py-16 bg-gray-50">
@@ -57,11 +24,42 @@ const FeaturedProducts: React.FC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">กำลังโหลดสินค้า...</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-center">
+            <p>{error}</p>
+            <button 
+              onClick={refetch} 
+              className="mt-2 text-red-600 hover:text-red-800 underline"
+            >
+              ลองใหม่อีกครั้ง
+            </button>
+          </div>
+        )}
+
+        {!loading && !error && products.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">ไม่มีสินค้าแนะนำในขณะนี้</p>
+          </div>
+        )}
+
+        {!loading && !error && products.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
