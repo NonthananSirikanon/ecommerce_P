@@ -1,14 +1,16 @@
-
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, User, LogOut } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { ShoppingCart, Search, Menu, X, User, LogOut, Home, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { useCart } from '../hooks/useCart';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const { summary } = useCart();
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -33,41 +35,62 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  // Helper function to check if link is active
+  const isActiveLink = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
+       
+          {/* <div className="flex items-center">
             <Link to="/" className="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-lg">
               PP
             </Link>
-          </div>
+          </div> */}
 
-          {/* Desktop Navigation */}
+         
           <nav className="hidden md:flex space-x-8">
-            <Link to="/" className="text-gray-600 hover:text-gray-900 transition-colors">
-              หน้าหลัก
+            <Link 
+              to="/" 
+              className={`flex items-center space-x-2 py-2 border-b-2 transition-colors ${
+                isActiveLink('/') 
+                  ? 'text-blue-600 border-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
+              }`}
+            >
+              <Home className="h-4 w-4" />
+              <span>หน้าหลัก</span>
             </Link>
-            <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">
-              ซื้อเครื่องเกม
-            </a>
+            <Link
+              to="/games"
+              className={`flex items-center space-x-2 py-2 border-b-2 transition-colors ${
+                isActiveLink('/games') 
+                  ? 'text-blue-600 border-blue-600' 
+                  : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
+              }`}
+            >
+              <Gamepad2 className="h-4 w-4" />
+              <span>ซื้อเครื่องเกม</span>
+            </Link>
           </nav>
 
-          {/* Search, Cart, and Auth */}
           <div className="flex items-center space-x-4">
             <Search className="h-5 w-5 text-gray-400 cursor-pointer hover:text-gray-600" />
             
             {isAuthenticated && (
-              <div className="relative">
-                <ShoppingCart className="h-5 w-5 text-gray-400 cursor-pointer hover:text-gray-600" />
-                <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                  3
-                </span>
-              </div>
+              <Link to="/cart" className="relative group">
+                <ShoppingCart className="h-5 w-5 text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" />
+                {summary.totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                    {summary.totalItems}
+                  </span>
+                )}
+              </Link>
             )}
 
-            {/* Authentication Section */}
             {isAuthenticated ? (
               <div className="relative" ref={userMenuRef}>
                 <button
@@ -123,7 +146,6 @@ const Header: React.FC = () => {
               </div>
             )}
             
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden"
@@ -133,18 +155,28 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100">
             <nav className="flex flex-col space-y-4">
-              <Link to="/" className="text-gray-600 hover:text-gray-900">
-                หน้าหลัก
+              <Link 
+                to="/" 
+                className={`flex items-center space-x-2 ${
+                  isActiveLink('/') ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Home className="h-4 w-4" />
+                <span>หน้าหลัก</span>
               </Link>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
-                ซื้อเครื่องเกม
-              </a>
+              <Link 
+                to="/games" 
+                className={`flex items-center space-x-2 ${
+                  isActiveLink('/games') ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Gamepad2 className="h-4 w-4" />
+                <span>ซื้อเครื่องเกม</span>
+              </Link>
               
-              {/* Mobile Auth Links */}
               {!isAuthenticated && (
                 <>
                   <Link to="/login" className="text-gray-600 hover:text-gray-900">
@@ -158,21 +190,35 @@ const Header: React.FC = () => {
               
               {isAuthenticated && (
                 <>
-                  <div className="text-sm text-gray-500 border-t pt-4">
-                    {user?.firstName} {user?.lastName} ({user?.email})
+                  <div className="border-t pt-4 mt-4">
+                    <div className="text-sm text-gray-500 mb-3">
+                      <div className="font-medium">{user?.firstName} {user?.lastName}</div>
+                      <div className="text-xs">{user?.email}</div>
+                    </div>
+                    <div className="space-y-2">
+                      <Link 
+                        to="/profile" 
+                        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                      >
+                        <User className="h-4 w-4" />
+                        <span>โปรไฟล์</span>
+                      </Link>
+                      <Link 
+                        to="/orders" 
+                        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span>คำสั่งซื้อ</span>
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>ออกจากระบบ</span>
+                      </button>
+                    </div>
                   </div>
-                  <a href="#" className="text-gray-600 hover:text-gray-900">
-                    โปรไฟล์
-                  </a>
-                  <a href="#" className="text-gray-600 hover:text-gray-900">
-                    คำสั่งซื้อ
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="text-left text-gray-600 hover:text-gray-900"
-                  >
-                    ออกจากระบบ
-                  </button>
                 </>
               )}
             </nav>

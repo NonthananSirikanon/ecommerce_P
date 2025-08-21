@@ -27,7 +27,6 @@ class ApiClient {
       ...options,
     };
 
-    // Add authorization header if token exists
     const token = localStorage.getItem('token');
     if (token) {
       config.headers = {
@@ -38,13 +37,29 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      const data = await response.json();
-
+      
       if (!response.ok) {
-        throw new Error(data.message || data.error || 'เกิดข้อผิดพลาดในการเชื่อมต่อ');
+        // Try to parse error response
+        let errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorData.error || errorMessage;
+        } catch {
+          // If JSON parsing fails, use response status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      return data;
+      // Try to parse successful response as JSON
+      try {
+        const data = await response.json();
+        return data;
+      } catch {
+        // If JSON parsing fails, it might be a text response
+        const text = await response.text();
+        throw new Error(`Invalid JSON response: ${text}`);
+      }
     } catch (error) {
       if (error instanceof Error) {
         throw error;

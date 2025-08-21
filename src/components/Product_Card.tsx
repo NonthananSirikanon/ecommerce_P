@@ -1,6 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../hooks/useCart';
+import { useAuth } from '../hooks/useAuth';
 import type { Product } from '../types/product';
 
 interface ProductCardProps {
@@ -9,9 +12,30 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
-  const handleAddToCart = () => {
-    if (onAddToCart) {
-      onAddToCart(product);
+  const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      setIsAdding(true);
+      addItem(product, 1);
+      
+      if (onAddToCart) {
+        onAddToCart(product);
+      } else {
+        navigate('/cart');
+      }
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการเพิ่มสินค้า');
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -81,11 +105,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           
           <button
             onClick={handleAddToCart}
-            disabled={product.quantity <= 0}
+            disabled={product.quantity <= 0 || isAdding}
             className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             <ShoppingCart className="h-4 w-4" />
-            {product.quantity <= 0 ? 'หมดสต็อก' : 'เพิ่มลงตะกร้า'}
+            {product.quantity <= 0 
+              ? 'หมดสต็อก' 
+              : isAdding 
+                ? 'กำลังเพิ่ม...' 
+                : 'เพิ่มลงตะกร้า'
+            }
           </button>
         </div>
       </div>

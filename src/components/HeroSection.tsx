@@ -1,24 +1,42 @@
-import { ArrowRight } from "lucide-react";
+import { Button } from "./ui/button";
 
-// Hero Section Component
-const HeroSection: React.FC = () => {
+const HeroSection = () => {
   return (
-    <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            ประสบการณ์เกมที่ยอดเยี่ยม
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-blue-100">
-            เครื่องเล่นเกมและอุปกรณ์คุณภาพสูง พร้อมส่งทั่วประเทศ
-          </p>
-          <button className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center">
-            เริ่มช้อปปิ้ง
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </button>
+    <section className="relative overflow-hidden bg-gradient-to-br from-background to-secondary/30">
+      <div className="container mx-auto px-4 py-24 md:py-32">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8">
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+              PPGaming
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-md">
+             เว็บไซต์ขายเครื่องเล่นเกมคราคาถูก
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                size="lg"
+                className="bg-gaming-gradient hover:opacity-90 transition-opacity"
+              >
+                สั่งซื้อเลย
+              </Button>
+              <Button variant="outline" size="lg">
+                ดูรายละเอียด
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 bg-gaming-gradient rounded-3xl blur-3xl opacity-20"></div>
+            <img
+              src="https://www.flashfly.net/wp/wp-content/uploads/2025/07/playstation-6.jpg"
+              alt="Latest gaming consoles including PlayStation, Xbox, and Nintendo Switch"
+              className="relative z-10 w-full h-auto rounded-2xl shadow-lg"
+            />
+          </div>
         </div>
       </div>
     </section>
   );
 };
+
 export default HeroSection;

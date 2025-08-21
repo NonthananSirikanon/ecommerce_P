@@ -5,11 +5,11 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-lg mb-4 inline-block">
+            {/* <div className="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-lg mb-4 inline-block">
               GameZone
-            </div>
+            </div> */}
             <p className="text-gray-400">
-              ร้านขายเครื่องเล่นเกมและอุปกรณ์เสริมชั้นนำในประเทศไทย
+              ร้านขายเครื่องเล่นเกมชั้นนำในประเทศไทย
             </p>
           </div>
           
@@ -44,9 +44,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2025 GameZone. สงวนลิขสิทธิ์</p>
-        </div>
+        
       </div>
     </footer>
   );

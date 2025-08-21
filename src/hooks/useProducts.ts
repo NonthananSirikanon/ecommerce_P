@@ -37,9 +37,19 @@ export const useProducts = (params?: ProductsQueryParams): UseProductsResult => 
       }
     } catch (err) {
       console.error('Error fetching products:', err);
+      let errorMessage = 'เกิดข้อผิดพลาดในการโหลดสินค้า';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('Too Many Requests')) {
+          errorMessage = 'เซิร์ฟเวอร์ไม่ว่าง กรุณารอสักครู่แล้วลองใหม่';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
       setState(prev => ({
         ...prev,
-        error: err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการโหลดสินค้า',
+        error: errorMessage,
         loading: false,
       }));
     }
@@ -84,9 +94,19 @@ export const useFeaturedProducts = (limit: number = 8): UseProductsResult => {
       }
     } catch (err) {
       console.error('Error fetching featured products:', err);
+      let errorMessage = 'เกิดข้อผิดพลาดในการโหลดสินค้า';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('Too Many Requests')) {
+          errorMessage = 'เซิร์ฟเวอร์ไม่ว่าง กรุณารอสักครู่แล้วลองใหม่';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
       setState(prev => ({
         ...prev,
-        error: err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการโหลดสินค้า',
+        error: errorMessage,
         loading: false,
       }));
     }

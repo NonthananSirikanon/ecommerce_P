@@ -5,7 +5,6 @@ export class AuthService {
   static async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
     
-    // Store tokens in localStorage
     localStorage.setItem('token', response.token);
     localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
@@ -23,7 +22,6 @@ export class AuthService {
     
     const response = await apiClient.post<LoginResponse>('/auth/register', registerPayload);
     
-    // Store tokens in localStorage
     localStorage.setItem('token', response.token);
     localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
@@ -33,13 +31,10 @@ export class AuthService {
 
   static async logout(): Promise<void> {
     try {
-      // Call logout endpoint if available
       await apiClient.post('/auth/logout');
     } catch (error) {
-      // Continue with logout even if API call fails
       console.warn('Logout API call failed:', error);
     } finally {
-      // Always clear local storage
       this.clearTokens();
     }
   }

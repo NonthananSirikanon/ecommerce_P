@@ -1,16 +1,10 @@
 import React from 'react';
 import ProductCard from "./Product_Card";
 import { useFeaturedProducts } from '../hooks/useProducts';
-import type { Product } from '../types/product';
 
 const FeaturedProducts: React.FC = () => {
   const { products, loading, error, refetch } = useFeaturedProducts(8);
 
-  const handleAddToCart = (product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
-    alert(`เพิ่ม "${product.name}" ลงในตะกร้าแล้ว!`);
-  };
 
   return (
     <section className="py-16 bg-gray-50">
@@ -54,8 +48,7 @@ const FeaturedProducts: React.FC = () => {
             {products.map((product) => (
               <ProductCard 
                 key={product.id} 
-                product={product} 
-                onAddToCart={handleAddToCart}
+                product={product}
               />
             ))}
           </div>

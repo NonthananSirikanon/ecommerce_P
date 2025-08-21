@@ -2,6 +2,7 @@
 import React, { createContext, useReducer, useEffect } from 'react';
 import type { AuthState, AuthContextType, LoginCredentials, RegisterCredentials, User } from '../types/auth';
 import { AuthService } from '../utils/authService';
+import { authEvents } from '../utils/events';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -77,6 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await AuthService.login(credentials);
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
+      authEvents.emit('auth:login', response.user);
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
@@ -93,6 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const response = await AuthService.register(credentials);
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
+      authEvents.emit('auth:login', response.user);
     } catch (error) {
       dispatch({ type: 'LOGIN_FAILURE' });
       throw error;
@@ -106,6 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn('Logout error:', error);
     } finally {
       dispatch({ type: 'LOGOUT' });
+      authEvents.emit('auth:logout');
     }
   };
 
