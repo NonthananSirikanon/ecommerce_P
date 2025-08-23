@@ -29,3 +29,8 @@ export interface ProductsQueryParams {
   limit?: number;
   search?: string;
 }
+
+export interface SingleProductResponse {
+  success: boolean;
+  product: Product;
+}

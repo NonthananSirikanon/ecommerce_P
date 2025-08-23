@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import SweetAlertUtils from '../utils/sweetAlert';
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -29,20 +30,27 @@ const RegisterPage: React.FC = () => {
     setError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('รหัสผ่านไม่ตรงกัน');
+      const errorMessage = 'รหัสผ่านไม่ตรงกัน';
+      setError(errorMessage);
+      SweetAlertUtils.warning('รหัสผ่านไม่ตรงกัน', 'กรุณาตรวจสอบรหัสผ่านและยืนยันรหัสผ่านให้ตรงกัน');
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
+      const errorMessage = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+      setError(errorMessage);
+      SweetAlertUtils.warning('รหัสผ่านสั้นเกินไป', errorMessage);
       return;
     }
 
     try {
       await register(formData);
+      SweetAlertUtils.auth.registerSuccess();
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการสร้างบัญชี');
+      const errorMessage = err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการสร้างบัญชี';
+      setError(errorMessage);
+      SweetAlertUtils.auth.registerError(errorMessage);
     }
   };
 

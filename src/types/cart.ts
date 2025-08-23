@@ -1,6 +1,5 @@
 import type { Product } from './product';
 
-// Backend API response types
 export interface BackendCartItem {
   id: string;
   productId: string;
@@ -46,7 +45,6 @@ export interface RemoveItemResponse {
   cartTotal: number;
 }
 
-// Frontend types (converted from backend)
 export interface CartItem {
   id: string;
   productId: string;
@@ -56,9 +54,9 @@ export interface CartItem {
     description: string;
     price: number;
     image: string | null;
-    quantity: number; // This will be stock quantity, not cart quantity
+    quantity: number; 
   };
-  quantity: number; // Cart quantity
+  quantity: number; 
   totalPrice: number;
   variant: string | null;
 }
@@ -90,7 +88,6 @@ export interface CartContextType {
   isInCart: (productId: string) => boolean;
 }
 
-// API request types
 export interface AddToCartRequest {
   productId: string;
   quantity: number;

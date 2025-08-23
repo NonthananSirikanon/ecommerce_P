@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ProductService } from '../utils/productService';
 import type { Product, ProductsQueryParams } from '../types/product';
 
@@ -11,6 +11,11 @@ interface UseProductsState {
 interface UseProductsResult extends UseProductsState {
   refetch: () => Promise<void>;
   clearError: () => void;
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+    totalProducts: number;
+  };
 }
 
 export const useProducts = (params?: ProductsQueryParams): UseProductsResult => {
@@ -20,11 +25,29 @@ export const useProducts = (params?: ProductsQueryParams): UseProductsResult => 
     error: null,
   });
 
+  const [pagination, setPagination] = useState<{
+    currentPage: number;
+    totalPages: number;
+    totalProducts: number;
+  } | undefined>();
+
+  // Extract individual params to avoid object reference issues
+  const page = params?.page || 1;
+  const limit = params?.limit || 10;
+  const search = params?.search;
+
+  // Memoize params object with stable references
+  const stableParams = useMemo(() => ({
+    page,
+    limit,
+    search,
+  }), [page, limit, search]);
+
   const fetchProducts = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
-      const response = await ProductService.getProducts(params);
+      const response = await ProductService.getProducts(stableParams);
       
       if (response.success && response.products) {
         setState(prev => ({
@@ -32,6 +55,10 @@ export const useProducts = (params?: ProductsQueryParams): UseProductsResult => 
           products: response.products,
           loading: false,
         }));
+
+        if (response.pagination) {
+          setPagination(response.pagination);
+        }
       } else {
         throw new Error('ไม่สามารถโหลดข้อมูลสินค้าได้');
       }
@@ -53,7 +80,7 @@ export const useProducts = (params?: ProductsQueryParams): UseProductsResult => 
         loading: false,
       }));
     }
-  }, [params]);
+  }, [stableParams]);
 
   const clearError = useCallback(() => {
     setState(prev => ({ ...prev, error: null }));
@@ -65,6 +92,7 @@ export const useProducts = (params?: ProductsQueryParams): UseProductsResult => 
 
   return {
     ...state,
+    pagination,
     refetch: fetchProducts,
     clearError,
   };
@@ -76,6 +104,12 @@ export const useFeaturedProducts = (limit: number = 8): UseProductsResult => {
     loading: true,
     error: null,
   });
+
+  const [pagination, setPagination] = useState<{
+    currentPage: number;
+    totalPages: number;
+    totalProducts: number;
+  } | undefined>();
 
   const fetchFeaturedProducts = useCallback(async () => {
     try {
@@ -89,6 +123,10 @@ export const useFeaturedProducts = (limit: number = 8): UseProductsResult => {
           products: response.products,
           loading: false,
         }));
+
+        if (response.pagination) {
+          setPagination(response.pagination);
+        }
       } else {
         throw new Error('ไม่สามารถโหลดข้อมูลสินค้าได้');
       }
@@ -122,6 +160,7 @@ export const useFeaturedProducts = (limit: number = 8): UseProductsResult => {
 
   return {
     ...state,
+    pagination,
     refetch: fetchFeaturedProducts,
     clearError,
   };

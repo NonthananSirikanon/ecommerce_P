@@ -1,24 +1,33 @@
 import { apiClient } from './api';
-import type { ProductsResponse, ProductsQueryParams } from '../types/product';
+import type { Product, ProductsResponse, ProductsQueryParams, SingleProductResponse } from '../types/product';
 
 export class ProductService {
   static async getProducts(params: ProductsQueryParams = {}): Promise<ProductsResponse> {
-    const { page = 1, limit = 100, search = 'product' } = params;
+    const { page = 1, limit = 10, search } = params;
     
-    const queryString = new URLSearchParams({
+    const queryParams: Record<string, string> = {
       page: page.toString(),
       limit: limit.toString(),
-      search: search,
-    }).toString();
+    };
+    
+    if (search) {
+      queryParams.search = search;
+    }
+    
+    const queryString = new URLSearchParams(queryParams).toString();
 
     return apiClient.get<ProductsResponse>(`/simple-products?${queryString}`);
   }
 
-  static async getFeaturedProducts(limit: number = 8): Promise<ProductsResponse> {
+  static async getFeaturedProducts(limit: number = 10): Promise<ProductsResponse> {
     return this.getProducts({
       page: 1,
       limit,
-      search: 'product',
     });
+  }
+
+  static async getProductById(id: string): Promise<Product> {
+    const response = await apiClient.get<SingleProductResponse>(`/simple-products/${id}`);
+    return response.product;
   }
 }

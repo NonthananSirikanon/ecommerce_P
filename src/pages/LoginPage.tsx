@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import SweetAlertUtils from '../utils/sweetAlert';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,9 +18,14 @@ const LoginPage: React.FC = () => {
 
     try {
       await login({ email, password });
+      // Get user data from auth context after successful login
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      SweetAlertUtils.auth.loginSuccess(userData.firstName || 'ผู้ใช้');
       navigate('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+      const errorMessage = err instanceof Error ? err.message : 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ';
+      setError(errorMessage);
+      SweetAlertUtils.auth.loginError(errorMessage);
     }
   };
 

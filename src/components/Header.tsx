@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingCart, Search, Menu, X, User, LogOut, Home, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useCart } from '../hooks/useCart';
+import SweetAlertUtils from '../utils/sweetAlert';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,12 +14,18 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      setIsUserMenuOpen(false);
-    } catch (error) {
-      console.error('Logout error:', error);
-      setIsUserMenuOpen(false);
+    const result = await SweetAlertUtils.auth.logoutConfirm();
+    
+    if (result.isConfirmed) {
+      try {
+        await logout();
+        setIsUserMenuOpen(false);
+        SweetAlertUtils.auth.logoutSuccess();
+      } catch (error) {
+        console.error('Logout error:', error);
+        SweetAlertUtils.error('ไม่สามารถออกจากระบบได้', 'กรุณาลองใหม่อีกครั้ง');
+        setIsUserMenuOpen(false);
+      }
     }
   };
 
@@ -35,7 +42,6 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  // Helper function to check if link is active
   const isActiveLink = (path: string) => {
     return location.pathname === path;
   };
@@ -44,14 +50,6 @@ const Header: React.FC = () => {
     <header className="bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-       
-          {/* <div className="flex items-center">
-            <Link to="/" className="bg-blue-600 text-white px-3 py-2 rounded-lg font-bold text-lg">
-              PP
-            </Link>
-          </div> */}
-
-         
           <nav className="hidden md:flex space-x-8">
             <Link 
               to="/" 
@@ -65,9 +63,9 @@ const Header: React.FC = () => {
               <span>หน้าหลัก</span>
             </Link>
             <Link
-              to="/games"
+              to="/consolegames"
               className={`flex items-center space-x-2 py-2 border-b-2 transition-colors ${
-                isActiveLink('/games') 
+                isActiveLink('/consolegames') 
                   ? 'text-blue-600 border-blue-600' 
                   : 'text-gray-600 hover:text-gray-900 border-transparent hover:border-gray-300'
               }`}

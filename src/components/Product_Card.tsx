@@ -5,6 +5,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import type { Product } from '../types/product';
+import SweetAlertUtils from '../utils/sweetAlert';
 
 interface ProductCardProps {
   product: Product;
@@ -17,15 +18,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
 
-  const handleAddToCart = async () => {
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking add to cart button
+    
     if (!isAuthenticated) {
+      SweetAlertUtils.warning('กรุณาเข้าสู่ระบบ', 'คุณต้องเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า');
       navigate('/login');
       return;
     }
 
     try {
       setIsAdding(true);
-      addItem(product, 1);
+      await addItem(product, 1);
+      
+      SweetAlertUtils.cart.addSuccess(product.name);
       
       if (onAddToCart) {
         onAddToCart(product);
@@ -33,7 +43,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         navigate('/cart');
       }
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการเพิ่มสินค้า');
+      const errorMessage = error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการเพิ่มสินค้า';
+      SweetAlertUtils.cart.addError(errorMessage);
     } finally {
       setIsAdding(false);
     }
@@ -47,7 +58,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow group">
+    <div 
+      onClick={handleCardClick}
+      className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow group cursor-pointer"
+    >
       <div className="aspect-square bg-gray-100 rounded-t-lg overflow-hidden relative">
         {product.image ? (
           <img
@@ -91,32 +105,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           </p>
         )}
         
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-lg font-bold text-blue-600">
-              {formatPrice(product.price)}
-            </span>
-            {product.quantity > 0 && (
-              <span className="text-xs text-gray-500">
-                เหลือ {product.quantity} ชิ้น
-              </span>
-            )}
-          </div>
-          
-          <button
-            onClick={handleAddToCart}
-            disabled={product.quantity <= 0 || isAdding}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {product.quantity <= 0 
-              ? 'หมดสต็อก' 
-              : isAdding 
-                ? 'กำลังเพิ่ม...' 
-                : 'เพิ่มลงตะกร้า'
-            }
-          </button>
-        </div>
+        <div className="flex flex-col items-start gap-2 w-full">
+  <div className="flex justify-between w-full">
+    <span className="text-lg font-bold text-blue-600">
+      {formatPrice(product.price)}
+    </span>
+    {product.quantity > 0 && (
+      <span className="text-xs text-gray-500">
+        เหลือ {product.quantity} ชิ้น
+      </span>
+    )}
+  </div>
+  <button
+    onClick={handleAddToCart}
+    disabled={product.quantity <= 0 || isAdding}
+    className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
+  >
+    <ShoppingCart className="h-4 w-4" />
+    {product.quantity <= 0 
+      ? 'หมดสต็อก' 
+      : isAdding 
+        ? 'กำลังเพิ่ม...' 
+        : 'เพิ่มลงตะกร้า'
+    }
+  </button>
+</div>
       </div>
     </div>
   );

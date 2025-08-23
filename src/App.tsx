@@ -8,6 +8,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
+import ConsoleGamesPage from './pages/ConsoleGamesPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/consolegames" element={<ConsoleGamesPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
               </Routes>
             </main>
             <Footer />
