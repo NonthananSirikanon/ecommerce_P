@@ -1,21 +1,46 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, MapPin, Settings } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
+import { useShippingAddresses } from '../hooks/useShippingAddresses';
+import AddressManagement from '../components/AddressManagement';
 import SweetAlertUtils from '../utils/sweetAlert';
+import type { ShippingAddress } from '../types/shippingAddress';
 
 const CartPage: React.FC = () => {
   const { items, summary, isLoading, error: cartError, updateQuantity, removeItem, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const { defaultAddress } = useShippingAddresses();
   const navigate = useNavigate();
   const [localError, setLocalError] = useState<string>('');
+  const [selectedAddress, setSelectedAddress] = useState<ShippingAddress | null>(null);
+  const [showAddressModal, setShowAddressModal] = useState(false);
 
   React.useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
     }
   }, [isAuthenticated, navigate]);
+
+  // Set default address when available
+  React.useEffect(() => {
+    if (defaultAddress && !selectedAddress) {
+      setSelectedAddress(defaultAddress);
+    }
+  }, [defaultAddress, selectedAddress]);
+
+  const handleAddressSelect = (address: ShippingAddress) => {
+    setSelectedAddress(address);
+  };
+
+  const openAddressModal = () => {
+    setShowAddressModal(true);
+  };
+
+  const closeAddressModal = () => {
+    setShowAddressModal(false);
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('th-TH', {
@@ -303,6 +328,54 @@ const CartPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Shipping Address Section */}
+          <div className="px-4 py-3 border-b-2 border-dashed border-black">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center">
+                <MapPin className="h-4 w-4 text-black mr-1" />
+                <span className="text-sm font-bold text-black">ที่อยู่จัดส่ง:</span>
+              </div>
+              <button
+                onClick={openAddressModal}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                title="จัดการที่อยู่"
+              >
+                <Settings className="h-3 w-3 text-black" />
+              </button>
+            </div>
+            
+            {selectedAddress ? (
+              <div className="text-xs text-black space-y-1">
+                <div className="font-medium">
+                  {selectedAddress.firstName} {selectedAddress.lastName}
+                </div>
+                {selectedAddress.company && (
+                  <div>{selectedAddress.company}</div>
+                )}
+                <div>{selectedAddress.addressLine1}</div>
+                {selectedAddress.addressLine2 && (
+                  <div>{selectedAddress.addressLine2}</div>
+                )}
+                <div>
+                  {selectedAddress.city}, {selectedAddress.state} {selectedAddress.postalCode}
+                </div>
+                <div>{selectedAddress.country}</div>
+                {selectedAddress.phone && (
+                  <div>โทร: {selectedAddress.phone}</div>
+                )}
+              </div>
+            ) : (
+              <div className="text-xs text-black">
+                <button
+                  onClick={openAddressModal}
+                  className="text-black hover:underline"
+                >
+                  + เลือกที่อยู่จัดส่ง
+                </button>
+              </div>
+            )}
+          </div>
+
           <div className="px-4 py-4">
             
             <div className="space-y-2 mb-4">
@@ -378,6 +451,39 @@ const CartPage: React.FC = () => {
       </div>
     </div>
   </div>
+
+  {/* Address Management Modal */}
+  {showAddressModal && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto">
+        <div className="sticky top-0 bg-white px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-900">จัดการที่อยู่จัดส่ง</h2>
+          <button
+            onClick={closeAddressModal}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="p-6">
+          <AddressManagement
+            selectedAddressId={selectedAddress?.id}
+            onAddressSelect={handleAddressSelect}
+          />
+        </div>
+
+        <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-gray-200 flex justify-end">
+          <button
+            onClick={closeAddressModal}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            เสร็จสิ้น
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
 </div>
   );
 };

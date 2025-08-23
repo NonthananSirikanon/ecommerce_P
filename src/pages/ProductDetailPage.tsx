@@ -126,7 +126,6 @@ const ProductDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Back Button */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <button
@@ -139,11 +138,9 @@ const ProductDetailPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Product Detail Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-            {/* Product Image */}
             <div className="aspect-square bg-gray-100">
               {product.image ? (
                 <img
@@ -170,7 +167,6 @@ const ProductDetailPage: React.FC = () => {
               )}
             </div>
 
-            {/* Product Info */}
             <div className="p-8">
               <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
@@ -191,7 +187,6 @@ const ProductDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Price and Stock */}
               <div className="border-t border-b border-gray-200 py-6 mb-6">
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -211,7 +206,6 @@ const ProductDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Quantity Selector */}
               {product.quantity > 0 && (
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -244,7 +238,6 @@ const ProductDetailPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Add to Cart Button */}
               <button
                 onClick={handleAddToCart}
                 disabled={product.quantity <= 0 || isAdding}
@@ -259,7 +252,6 @@ const ProductDetailPage: React.FC = () => {
                 }
               </button>
 
-              {/* Product Details */}
               <div className="mt-8 border-t pt-8">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">รายละเอียดสินค้า</h3>
                 <div className="space-y-2 text-sm text-gray-600">
