@@ -10,6 +10,10 @@ import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
 import ConsoleGamesPage from './pages/ConsoleGamesPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
+import UserProfilePage from './pages/UserProfilePage';
+import AddressManagementPage from './pages/AddressManagementPage';
+import PaymentManagementPage from './pages/PaymentManagementPage';
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/consolegames" element={<ConsoleGamesPage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route path="/order-history" element={<OrderHistoryPage />} />
+                <Route path="/profile" element={<UserProfilePage />} />
+                <Route path="/addresses" element={<AddressManagementPage />} />
+                <Route path="/payments" element={<PaymentManagementPage />} />
               </Routes>
             </main>
             <Footer />

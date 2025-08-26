@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, User, LogOut, Home, Gamepad2 } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, LogOut, Home, Gamepad2, MapPin, Package, CreditCard } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useCart } from '../hooks/useCart';
 import SweetAlertUtils from '../utils/sweetAlert';
@@ -100,22 +100,42 @@ const Header: React.FC = () => {
                 </button>
                 
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                  <div className="absolute right-0 mt-2 w-52 bg-white rounded-md shadow-lg py-1 z-10">
                     <div className="px-4 py-2 text-sm text-gray-700 border-b">
                       {user?.email}
                     </div>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
                     >
+                      <User className="h-4 w-4 mr-2" />
                       โปรไฟล์
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    </Link>
+                    <Link
+                      to="/addresses"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
                     >
-                      คำสั่งซื้อ
-                    </a>
+                      <MapPin className="h-4 w-4 mr-2" />
+                      จัดการที่อยู่
+                    </Link>
+                    <Link
+                      to="/payments"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      ประวัติการชำระเงิน
+                    </Link>
+                    <Link
+                      to="/order-history"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <Package className="h-4 w-4 mr-2" />
+                      ประวัติการสั่งซื้อ
+                    </Link>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -202,11 +222,11 @@ const Header: React.FC = () => {
                         <span>โปรไฟล์</span>
                       </Link>
                       <Link 
-                        to="/orders" 
+                        to="/order-history" 
                         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
                       >
                         <ShoppingCart className="h-4 w-4" />
-                        <span>คำสั่งซื้อ</span>
+                        <span>ประวัติการสั่งซื้อ</span>
                       </Link>
                       <button
                         onClick={handleLogout}

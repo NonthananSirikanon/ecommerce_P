@@ -30,13 +30,12 @@ export class AuthService {
   }
 
   static async logout(): Promise<void> {
-    try {
-      await apiClient.post('/auth/logout');
-    } catch (error) {
-      console.warn('Logout API call failed:', error);
-    } finally {
-      this.clearTokens();
-    }
+    // ทำการ logout โดยการลบ tokens ที่เก็บไว้ใน localStorage
+    // (ไม่ต้องเรียก API เนื่องจาก backend ไม่มี /auth/logout endpoint)
+    this.clearTokens();
+    
+    // อาจจะเพิ่ม logic อื่น ๆ ถ้าจำเป็น เช่น clear cache หรือ redirect
+    console.log('User logged out successfully');
   }
 
   static async refreshToken(): Promise<string> {
@@ -46,12 +45,24 @@ export class AuthService {
         throw new Error('No refresh token available');
       }
 
-      const response = await apiClient.post<{ token: string }>('/auth/refresh', {
-        refreshToken,
-      });
+      // ตรวจสอบว่า backend มี /auth/refresh endpoint หรือไม่
+      // ถ้าไม่มี จะใช้ token เดิมต่อไปชั่วคราว
+      try {
+        const response = await apiClient.post<{ token: string }>('/auth/refresh', {
+          refreshToken,
+        });
 
-      localStorage.setItem('token', response.token);
-      return response.token;
+        localStorage.setItem('token', response.token);
+        return response.token;
+      } catch {
+        // ถ้า API ไม่มี endpoint นี้ ให้ใช้ token เดิม
+        console.warn('Refresh token API not available, using existing token');
+        const existingToken = this.getToken();
+        if (existingToken) {
+          return existingToken;
+        }
+        throw new Error('No valid token available');
+      }
     } catch (error) {
       this.clearTokens();
       throw error;
