@@ -49,9 +49,9 @@ function App() {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/consolegames" element={<ConsoleGamesPage />} />
                     <Route path="/product/:id" element={<ProductDetailPage />} />
-                    <Route path="/order-history" element={<OrderHistoryPage />} />
+                    {/* <Route path="/order-history" element={<OrderHistoryPage />} /> */}
                     <Route path="/profile" element={<UserProfilePage />} />
-                    <Route path="/addresses" element={<AddressManagementPage />} />
+                    {/* <Route path="/addresses" element={<AddressManagementPage />} /> */}
                     <Route path="/payments" element={<PaymentManagementPage />} />
                   </Routes>
                 </main>

@@ -2,10 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Package, 
-  Users, 
-  ShoppingCart, 
-  BarChart3,
-  Settings,
+  // Users, 
+  // ShoppingCart, 
+  // BarChart3,
+  // Settings,
   LogOut,
   Menu,
   X
@@ -30,26 +30,26 @@ const AdminSidebar = () => {
       label: 'จัดการสินค้า',
       path: '/admin/products'
     },
-    {
-      icon: Users,
-      label: 'จัดการลูกค้า',
-      path: '/admin/customers'
-    },
-    {
-      icon: ShoppingCart,
-      label: 'คำสั่งซื้อ',
-      path: '/admin/orders'
-    },
-    {
-      icon: BarChart3,
-      label: 'รายงาน',
-      path: '/admin/reports'
-    },
-    {
-      icon: Settings,
-      label: 'ตั้งค่า',
-      path: '/admin/settings'
-    }
+    // {
+    //   icon: Users,
+    //   label: 'จัดการลูกค้า',
+    //   path: '/admin/customers'
+    // },
+    // {
+    //   icon: ShoppingCart,
+    //   label: 'คำสั่งซื้อ',
+    //   path: '/admin/orders'
+    // },
+    // {
+    //   icon: BarChart3,
+    //   label: 'รายงาน',
+    //   path: '/admin/reports'
+    // },
+    // {
+    //   icon: Settings,
+    //   label: 'ตั้งค่า',
+    //   path: '/admin/settings'
+    // }
   ];
 
   const handleLogout = () => {
@@ -69,7 +69,7 @@ const AdminSidebar = () => {
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="lg:hidden fixed inset-0  bg-opacity-50 backdrop-blur-sm  z-40"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -80,7 +80,7 @@ const AdminSidebar = () => {
         ${isCollapsed ? 'w-16' : 'w-64'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         bg-white border-r border-gray-200 transition-all duration-300 ease-in-out
-        flex flex-col h-full
+        flex flex-col h-screen
       `}>
         {/* Header */}
         <div className="p-4 border-b border-gray-200">

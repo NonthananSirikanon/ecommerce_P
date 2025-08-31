@@ -101,7 +101,7 @@ const EnhancedAdminDashboard = () => {
           <p className="text-gray-600">ภาพรวมและการวิเคราะห์ข้อมูลร้านค้าออนไลน์</p>
         </div>
         <div className="mt-4 sm:mt-0 flex space-x-3">
-          <select
+          {/* <select
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
             value={dateRange.period}
             onChange={(e) => setDateRange({ ...dateRange, period: e.target.value as 'daily' | 'weekly' | 'monthly' })}
@@ -109,7 +109,7 @@ const EnhancedAdminDashboard = () => {
             <option value="daily">รายวัน</option>
             <option value="weekly">รายสัปดาห์</option>
             <option value="monthly">รายเดือน</option>
-          </select>
+          </select> */}
           <button
             onClick={handleRefreshData}
             disabled={refreshing}

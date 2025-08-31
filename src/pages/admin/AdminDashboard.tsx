@@ -204,7 +204,7 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Product Categories */}
+        {/* Product Categories
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">หมวดหมู่สินค้า</h2>
           {productAnalytics?.categoryDistribution ? (
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Recent Orders */}

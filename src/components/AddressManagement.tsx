@@ -345,7 +345,7 @@ const AddressManagement: React.FC<AddressManagementProps> = ({
 
       {/* Address Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0  bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-screen overflow-y-auto">
             <div className="sticky top-0 bg-white px-6 py-4 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">

@@ -112,14 +112,14 @@ const Header: React.FC = () => {
                       <User className="h-4 w-4 mr-2" />
                       โปรไฟล์
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/addresses"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <MapPin className="h-4 w-4 mr-2" />
                       จัดการที่อยู่
-                    </Link>
+                    </Link> */}
                     <Link
                       to="/payments"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -128,14 +128,14 @@ const Header: React.FC = () => {
                       <CreditCard className="h-4 w-4 mr-2" />
                       ประวัติการชำระเงิน
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/order-history"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       <Package className="h-4 w-4 mr-2" />
                       ประวัติการสั่งซื้อ
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -208,7 +208,7 @@ const Header: React.FC = () => {
               
               {isAuthenticated && (
                 <>
-                  <div className="border-t pt-4 mt-4">
+                  <div className="z-1 border-t pt-4 mt-4">
                     <div className="text-sm text-gray-500 mb-3">
                       <div className="font-medium">{user?.firstName} {user?.lastName}</div>
                       <div className="text-xs">{user?.email}</div>
