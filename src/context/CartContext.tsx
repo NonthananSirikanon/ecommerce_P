@@ -139,7 +139,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       dispatch({ type: 'SET_ERROR', payload: null });
       
       const response = await CartService.addToCart({
-        productId: product.id,
+        productId: product.id.toString(),
         quantity,
       });
 

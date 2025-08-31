@@ -5,9 +5,23 @@ export class AuthService {
   static async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
     
+    // Store tokens and user data
     localStorage.setItem('token', response.token);
     localStorage.setItem('refreshToken', response.refreshToken);
     localStorage.setItem('user', JSON.stringify(response.user));
+    
+    return response;
+  }
+
+  // Admin-specific login with role validation
+  static async adminLogin(credentials: LoginCredentials): Promise<LoginResponse> {
+    const response = await this.login(credentials);
+    
+    // Verify admin role
+    if (response.user.role !== 'admin') {
+      this.clearTokens();
+      throw new Error('คุณไม่มีสิทธิ์เข้าใช้งานระบบผู้ดูแล');
+    }
     
     return response;
   }
@@ -94,5 +108,17 @@ export class AuthService {
 
   static isAuthenticated(): boolean {
     return !!this.getToken() && !!this.getStoredUser();
+  }
+
+  // Check if current user is admin
+  static isAdmin(): boolean {
+    const user = this.getStoredUser();
+    return user?.role === 'admin';
+  }
+
+  // Check if user has specific role
+  static hasRole(role: string): boolean {
+    const user = this.getStoredUser();
+    return user?.role === role;
   }
 }

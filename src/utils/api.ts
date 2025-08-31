@@ -223,6 +223,16 @@ class ApiClient {
       })
     );
   }
+
+  async patch<T>(endpoint: string, data?: unknown): Promise<T> {
+    const key = this.generateRequestKey('PATCH', endpoint, data);
+    return this.deduplicateRequest(key, () =>
+      this.retryRequest(async () => {
+        const response = await this.client.patch(endpoint, data);
+        return response.data;
+      })
+    );
+  }
 }
 
 export const apiClient = new ApiClient();

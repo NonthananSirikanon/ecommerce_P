@@ -85,6 +85,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const adminLogin = async (credentials: LoginCredentials): Promise<void> => {
+    dispatch({ type: 'LOGIN_START' });
+    
+    try {
+      const response = await AuthService.adminLogin(credentials);
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response.user });
+      authEvents.emit('auth:login', response.user);
+    } catch (error) {
+      dispatch({ type: 'LOGIN_FAILURE' });
+      throw error;
+    }
+  };
+
   const register = async (credentials: RegisterCredentials): Promise<void> => {
     dispatch({ type: 'LOGIN_START' });
     
@@ -118,6 +131,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated: state.isAuthenticated,
     isLoading: state.isLoading,
     login,
+    adminLogin,
     register,
     logout,
   };
